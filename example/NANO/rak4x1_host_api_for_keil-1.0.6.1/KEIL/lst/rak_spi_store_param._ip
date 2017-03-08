@@ -1,0 +1,1 @@
+"..\API\API_Lib\rak_spi_store_param.c" -E -c --cpu Cortex-M0 -O0 --apcs=interwork -I..\Libraries\CMSIS\Include -I..\Libraries\Device\Nuvoton\NANO1xx\Include -I..\Libraries\NANO1xx_Drivers\Include -I..\Libraries\NANO1xx_Libs\spiFlashLib -I..\API -I..\..\SPI_host_keil -I..\API\API_Lib -I "d:\Keil\ARM\INC" -I "d:\Keil\ARM\INC\Nuvoton\Nano1xx" -o ".\lst\rak_spi_store_param.i"
