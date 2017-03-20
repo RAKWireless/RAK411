@@ -536,7 +536,7 @@ void rak_asciiDotAddressTouint32(uint8 *hexAddr, int8 *asciiDotAddress);
 
 
 
-#define RAK_TICKS_PER_SECOND   			2500 
+#define RAK_TICKS_PER_SECOND   			(2500 *3)
 #define RAK_SAVETIMEOUT       			10 * RAK_TICKS_PER_SECOND
 #define RAK_EASYCONFIG_TIMEOUT       	60 * RAK_TICKS_PER_SECOND
 #define RAK_WPS_TIMEOUT       			130 * RAK_TICKS_PER_SECOND
