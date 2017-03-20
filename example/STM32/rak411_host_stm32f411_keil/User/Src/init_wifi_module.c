@@ -26,7 +26,8 @@ int init_wifi_module(void)
         printf("%c",uCmdRspFrame.initResponse.strdata[i]);	
 	} 
 	     
-  
+    
+    delay_ms(200);
 	retval=  rak_get_version();
 	if(retval!=RUN_OK)
   	{
@@ -39,6 +40,50 @@ int init_wifi_module(void)
 		  printf("version=%s\r\n",uCmdRspFrame.versionFrame.host_fw);
 		  rak_clearPktIrq();
   	}
+    
+    rak_scan_t ScanFrame;
+    do {
+        ScanFrame.channel=0;
+        ScanFrame.ssid[0]=0;
+        retval=  rak_uscan(&ScanFrame);
+        if(retval!=RUN_OK)
+        {
+            return retval;
+        }
+        else
+        {
+            RAK_RESPONSE_TIMEOUT(RAK_SCAN_IMEOUT);
+            rak_read_packet(&uCmdRspFrame);
+            printf("scan retval =%d\r\n",uCmdRspFrame.scanResponse.status);
+            rak_clearPktIrq();
+            if (uCmdRspFrame.scanResponse.status==0)
+            {
+                printf("Scan num =%d\r\n",uCmdRspFrame.scanResponse.ap_num);
+                break;
+            }else {
+                delay_ms(100);
+            }
+        }
+    }while(1);
+    
+    rak_getscan_t GetScanFrame;
+    GetScanFrame.scan_num=uCmdRspFrame.scanResponse.ap_num;
+    retval=  rak_getscan(&GetScanFrame);
+    if(retval!=RUN_OK)
+    {
+        return retval;
+    }else{
+        RAK_RESPONSE_TIMEOUT(RAK_GETSCAN_IMEOUT);
+        rak_read_packet(&uCmdRspFrame);
+        for (int i=0;i<GetScanFrame.scan_num;i++)
+        {
+            printf("%s  ch=%d   rssi=-%d   security=0x%X\r\n",uCmdRspFrame.getscanResponse.strScanInfo[i].ssid,
+                   uCmdRspFrame.getscanResponse.strScanInfo[i].rfChannel,
+                   255-uCmdRspFrame.getscanResponse.strScanInfo[i].rssiVal,
+                   uCmdRspFrame.getscanResponse.strScanInfo[i].securityMode);
+        }
+        rak_clearPktIrq();	
+    }
 
 	retval=rak_set_psk(&rak_strapi.uPskFrame);
 	if(retval!=RUN_OK)
